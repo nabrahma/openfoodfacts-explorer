@@ -2,7 +2,9 @@
 	import InfoTooltip from '../InfoTooltip.svelte';
 	import { _ } from '$lib/i18n';
 	import { getLanguageName } from '$lib/languages';
-	import { NUTRIENTS, type NutrientKey, type Product } from '$lib/api';
+	import { NUTRIENTS, type NutrientKey, type Product, type Nutriments } from '$lib/api';
+	import { preferences } from '$lib/settings';
+	import { userInfo } from '$lib/stores/user';
 
 	import IconMdiNutrition from '@iconify-svelte/mdi/nutrition';
 	import IconMdiHelpCircleOutline from '@iconify-svelte/mdi/help-circle-outline';
@@ -11,6 +13,7 @@
 	import IconMdiAlert from '@iconify-svelte/mdi/alert';
 	import IconMdiAlertCircle from '@iconify-svelte/mdi/alert-circle';
 	import IconMdiSwapHorizontal from '@iconify-svelte/mdi/swap-horizontal';
+	import IconMdiDeleteSweep from '@iconify-svelte/mdi/delete-sweep';
 
 	import ImageButton from '../ImageButton.svelte';
 	import { analyzeNutrition } from './nutrition';
@@ -99,6 +102,14 @@
 		if (results.some((r) => r.severity === 'warning')) return 'input-warning';
 		return '';
 	});
+
+	function wipeAllNutrientValues() {
+		product = {
+			...product,
+			nutriments: {} as Nutriments
+		};
+		additionalNutrients = [];
+	}
 </script>
 
 <h2
@@ -165,6 +176,15 @@
 					{$_('product.edit.nutritional_values')}
 				</span>
 			</div>
+
+			{#if $preferences.moderator && $userInfo?.isModerator}
+				<div class="mb-4">
+					<button type="button" class="btn btn-error btn-sm" onclick={wipeAllNutrientValues}>
+						<IconMdiDeleteSweep class="h-4 w-4" />
+						{$_('product.edit.remove_all_nutrient_values')}
+					</button>
+				</div>
+			{/if}
 
 			<!-- Energy -->
 			<fieldset class="fieldset">
