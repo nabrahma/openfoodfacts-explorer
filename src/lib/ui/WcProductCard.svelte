@@ -80,7 +80,7 @@ Wraps the <product-card> web component and adds accessibility features.
 		const off = createProductsApi(fetch);
 		const { data, error } = await off.getProductV3(product.code);
 
-		if (error || !data || !data.product) {
+		if (error || !data || !('product' in data)) {
 			toastCtx.error(
 				$_('product.menu.add_to_comparison_error', {
 					default: 'Failed to load product for comparison'
@@ -89,7 +89,7 @@ Wraps the <product-card> web component and adds accessibility features.
 			return;
 		}
 
-		const fullProduct: Product = data.product;
+		const fullProduct = data.product as Product;
 
 		const ok = compareStore.addProduct(fullProduct);
 		if (ok) {
