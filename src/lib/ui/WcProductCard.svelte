@@ -5,8 +5,9 @@ Wraps the <product-card> web component and adds accessibility features.
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { ProductReduced } from '$lib/api';
+	import { createProductsApi } from '$lib/api/product';
 	import type { ScoreData } from '$lib/scoring';
-	import { OpenFoodFacts, type Product } from '@openfoodfacts/openfoodfacts-nodejs';
+	import type { Product } from '@openfoodfacts/openfoodfacts-nodejs';
 	import { _ } from 'svelte-i18n';
 
 	import IconMdiAdd from '@iconify-svelte/mdi/plus';
@@ -76,9 +77,19 @@ Wraps the <product-card> web component and adds accessibility features.
 	async function addToComparison() {
 		closeContextMenu();
 
-		// @ts-expect-error - Product should not have { [key: string]: string },
-		// because that means it ONLY has string values
-		const fullProduct: Product = await new OpenFoodFacts(fetch).getProductV3(product.code);
+		const off = createProductsApi(fetch);
+		const { data, error } = await off.getProductV3(product.code);
+
+		if (error || !data || !data.product) {
+			toastCtx.error(
+				$_('product.menu.add_to_comparison_error', {
+					default: 'Failed to load product for comparison'
+				})
+			);
+			return;
+		}
+
+		const fullProduct: Product = data.product;
 
 		const ok = compareStore.addProduct(fullProduct);
 		if (ok) {
