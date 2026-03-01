@@ -120,30 +120,36 @@
 			</div>
 			<div class="flex flex-wrap items-center gap-2">
 				{#if $compareStore.length > 0}
-					<div class="join">
+					<div class="flex flex-wrap items-center gap-2">
 						<button
-							class="join-item btn btn-sm"
-							class:btn-active={comparisonMode === 'absolute'}
+							class="btn btn-sm"
+							class:btn-outline={comparisonMode === 'absolute'}
+							class:btn-ghost={comparisonMode !== 'absolute'}
 							onclick={() => (comparisonMode = 'absolute')}
 						>
 							{$_('compare.mode_absolute')}
 						</button>
 						<button
-							class="join-item btn btn-sm"
-							class:btn-active={comparisonMode === 'relative-first'}
+							class="btn btn-sm"
+							class:btn-outline={comparisonMode === 'relative-first'}
+							class:btn-ghost={comparisonMode !== 'relative-first'}
 							onclick={() => (comparisonMode = 'relative-first')}
 						>
 							{$_('compare.mode_vs_first')}
 						</button>
 						<button
-							class="join-item btn btn-sm"
-							class:btn-active={comparisonMode === 'relative-best'}
+							class="btn btn-sm"
+							class:btn-outline={comparisonMode === 'relative-best'}
+							class:btn-ghost={comparisonMode !== 'relative-best'}
 							onclick={() => (comparisonMode = 'relative-best')}
 						>
 							{$_('compare.mode_vs_best')}
 						</button>
 					</div>
-					<button class="btn btn-sm btn-primary" onclick={shareComparison}>
+					<button
+						class="btn btn-sm bg-white text-black hover:bg-gray-200"
+						onclick={shareComparison}
+					>
 						<IconMdiShareVariant class="h-4 w-4" />
 						{$_('compare.share')}
 					</button>
